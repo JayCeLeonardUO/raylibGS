@@ -3,6 +3,9 @@ project(example)
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Set OpenGL version BEFORE raylib is built
+set(GRAPHICS "GRAPHICS_API_OPENGL_43" CACHE STRING "" FORCE)
+set(OPENGL_VERSION "4.3" CACHE STRING "" FORCE)
 
 # Dependencies
 set(RAYLIB_VERSION 5.5)
@@ -24,7 +27,7 @@ endif()
 
 # Our Project
 
-add_executable(${PROJECT_NAME} core_basic_window.c)
+add_executable(${PROJECT_NAME} rlgl_compute_shader.c)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

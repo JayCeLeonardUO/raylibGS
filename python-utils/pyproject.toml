@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "python-utils"
+version = "0.1.0"
+description = ""
+authors = ["JayCeLeonardUO <jayce@uoregon.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+plyfile = "^1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

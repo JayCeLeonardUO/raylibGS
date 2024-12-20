@@ -32,7 +32,9 @@
 #else // PLATFORM_ANDROID, PLATFORM_WEB
 #define GLSL_VERSION 100
 #endif
+bool LoadPointCloud(const char *filename);
 
+struct 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -49,7 +51,8 @@ int main(void)
 
     // Load Eratosthenes shader
     // NOTE: Defining 0 (NULL) for vertex shader forces usage of internal default vertex shader
-    Shader shader = LoadShader(0, TextFormat("resources/shaders/eratosthenes.fs", GLSL_VERSION));
+    // /home/jpleona/jpleona_C/raylibGS/myGS/resources/shaders/eratosthenes.fs
+    Shader shader = LoadShader(0, TextFormat("/home/jpleona/jpleona_C/raylibGS/myGS/resources/shaders/eratosthenes.glsl", GLSL_VERSION));
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -94,4 +97,15 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     return 0;
+}
+
+bool LoadPointCloud(const char *filename)
+{
+    bool succsess = false;
+    int dataSize = 0;
+    unsigned int newDataSize = 0;
+    // load in the points from the .ply like they are verticies in a mesh
+
+    // LoadFileData()
+    return false;
 }

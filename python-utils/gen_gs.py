@@ -1,36 +1,42 @@
 import numpy as np
+from plyfile import PlyData, PlyElement
 
-def generate_ply(vertices, faces, filename):
+def gen_gs()->np.ndarray:
+    # Define the parameters of the Gaussian function
+    mu = [10, 10, 10]
+    cov = [
+        [0.8084480166435242, -0.376901775598526, -0.947654664516449],
+        [-0.376901775598526, 2.381552219390869, 1.5799134969711304],
+        [-0.947654664516449, 1.5799134969711304, 1.899906873703003],
+    ]
+    # Generate the data
+    X = np.random.multivariate_normal(mu, cov, 10000)
+    return X
+
+def save_point_cloud_ply(points: np.ndarray, filename: str = 'output.ply'):
     """
-    Generates a .ply file for Blender.
-
-    Parameters:
-    vertices (list of tuple): List of vertex coordinates (x, y, z).
-    faces (list of tuple): List of faces, each face is a tuple of vertex indices.
-    filename (str): The name of the output .ply file.
+    Convert numpy array of 3D points into a PLY file
+    
+    Args:
+        points: np.ndarray of shape (N, 3) containing 3D points
+        filename: output PLY filename
     """
-    with open(filename, 'w') as ply_file:
-        # Write the header
-        ply_file.write("ply\n")
-        ply_file.write("format ascii 1.0\n")
-        ply_file.write(f"element vertex {len(vertices)}\n")
-        ply_file.write("property float x\n")
-        ply_file.write("property float y\n")
-        ply_file.write("property float z\n")
-        ply_file.write(f"element face {len(faces)}\n")
-        ply_file.write("property list uchar int vertex_indices\n")
-        ply_file.write("end_header\n")
+    # Convert points to structured array
+    vertices = np.zeros(len(points), dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    vertices['x'] = points[:, 0]
+    vertices['y'] = points[:, 1]
+    vertices['z'] = points[:, 2]
+    
+    # Create PLY element
+    vertex_element = PlyElement.describe(vertices, 'vertex')
+    
+    # Write PLY file
+    PlyData([vertex_element], text=True).write(filename)
 
-        # Write the vertex data
-        for vertex in vertices:
-            ply_file.write(f"{vertex[0]} {vertex[1]} {vertex[2]}\n")
-
-        # Write the face data
-        for face in faces:
-            ply_file.write(f"{len(face)} {' '.join(map(str, face))}\n")
-
+# Usage
 if __name__ == "__main__":
-    # Example usage
-    vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]
-    faces = [(0, 1, 2, 3), (4, 5, 6, 7), (0, 1, 5, 4), (2, 3, 7, 6), (0, 3, 7, 4), (1, 2, 6, 5)]
-    generate_ply(vertices, faces, "output.ply")
+    # Generate points
+    points = gen_gs()
+    
+    # Save to PLY
+    save_point_cloud_ply(points)

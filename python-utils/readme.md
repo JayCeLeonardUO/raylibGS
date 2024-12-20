@@ -14,3 +14,4 @@ python gen_gs.py
 ```bash
 blender --python load_ply.py
 ```
+![alt text](GS_image.png)
