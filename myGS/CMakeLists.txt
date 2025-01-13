@@ -27,7 +27,7 @@ endif()
 
 # Our Project
 
-add_executable(${PROJECT_NAME} rlgl_compute_shader.c)
+add_executable(${PROJECT_NAME} mainGS.c)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 
