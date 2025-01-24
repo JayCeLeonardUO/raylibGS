@@ -7,7 +7,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Project paths
-PROJECT_ROOT="/home/leona/jpleona_c/raylibGS/myGS"
+PROJECT_ROOT="/home/jpleona/jpleona_c/raylibGS/myGS"
 EXECUTABLE_PATH="$PROJECT_ROOT/build/example"
 
 # Navigate to project root
