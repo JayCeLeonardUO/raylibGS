@@ -89,8 +89,9 @@ void InitMyDrawFrame(MyDrawFrame *myFrame) {
   myFrame->gsParams.sigmaYY = 1.0f;
   myFrame->gsParams.sigmaXY = 0.0f;
   myFrame->gsParams.center = (Vector2){0.0f, 0.0f};
-  InitGausianShader(&myFrame->gsShader);
   myFrame->target = LoadRenderTexture(screenWidth, screenHeight);
+  // I should have made it so this happens in Set Gausian values
+  InitGausianShader(&myFrame->gsShader);
 }
 
 //----------------------------------------------------------------------------------
@@ -116,7 +117,13 @@ void UpdateDrawFrame(MyDrawFrame *myFrame) {
   myFrame->gsParams.center =
       (Vector2){GetMousePosition().x / (float)GetScreenWidth(),
                 GetMousePosition().y / (float)GetScreenHeight()};
-  UpdateGausianShader(&myFrame->gsParams,&myFrame->gsShader);
+  TraceLog(LOG_INFO, "Center: %f, %f", myFrame->gsParams.center.x,
+           myFrame->gsParams.center.y);
+  TraceLog(LOG_INFO, "SigmaXX: %f", myFrame->gsParams.sigmaXX);
+  TraceLog(LOG_INFO, "SigmaYY: %f", myFrame->gsParams.sigmaYY);
+  TraceLog(LOG_INFO, "SigmaXY: %f", myFrame->gsParams.sigmaXY);
+  TraceLog(LOG_INFO, "Amplitude: %f", myFrame->gsParams.amplitude);
+  UpdateGausianShader(&myFrame->gsParams, &myFrame->gsShader);
   BeginTextureMode(myFrame->target); // Enable drawing to texture
   ClearBackground(BLACK);            // Clear the render texture
 
@@ -132,16 +139,22 @@ void UpdateDrawFrame(MyDrawFrame *myFrame) {
   //----------------------------------------------------------------------------------
   BeginDrawing();
 
-  DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+  // DrawText("Congrats! You created your first window!", 190, 200, 20,
+  // LIGHTGRAY);
   BeginShaderMode(myFrame->gsShader.shader);
 
+  DrawTextureRec(myFrame->target.texture,
+                 (Rectangle){0, 0, (float)myFrame->target.texture.width,
+                             (float)-myFrame->target.texture.height},
+                 (Vector2){0.0f, 0.0f}, WHITE);
   EndShaderMode();
   EndDrawing();
   //----------------------------------------------------------------------------------
 }
 
 void InitGausianShader(GaussianShader *gausianShader) {
-  gausianShader->shader = LoadShader(NULL, "/home/jpleona/jpleona_c/raylibGS/myGS/resources/shaders/gsn.fs");
+  gausianShader->shader = LoadShader(
+      NULL, "/home/jpleona/jpleona_c/raylibGS/myGS/resources/shaders/gsn.fs");
   gausianShader->amplitudeLoc =
       GetShaderLocation(gausianShader->shader, "u_Amplitude");
   gausianShader->sigmaXXLoc =
@@ -154,6 +167,11 @@ void InitGausianShader(GaussianShader *gausianShader) {
       GetShaderLocation(gausianShader->shader, "u_Center");
   gausianShader->resolutionLoc =
       GetShaderLocation(gausianShader->shader, "u_Resolution");
+
+  float resolution[2] = {(float)screenWidth, (float)screenHeight};
+  SetShaderValue(gausianShader->shader, gausianShader->resolutionLoc,
+                 resolution, SHADER_UNIFORM_VEC2);
+  TraceLog(LOG_INFO, "Resolution: %f x %f", resolution[0], resolution[1]);
 }
 
 void UpdateGausianShader(const GaussianParams *params,
